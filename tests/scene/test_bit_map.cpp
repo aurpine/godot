@@ -362,7 +362,7 @@ TEST_CASE("[BitMap] Blit") {
 	bm_empty.blit(blit_pos, blit_bit_map);
 
 	// Testing if uninitialized bit map does not crash
-	blit_bit_map->create(blit_size);
+	blit_bit_map = BitMap::create(blit_size);
 	bm_empty.blit(blit_pos, blit_bit_map);
 
 	// Testing if uninitialized bit map does not crash
