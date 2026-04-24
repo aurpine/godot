@@ -55,8 +55,8 @@ protected:
 	static void _bind_methods();
 
 public:
-	void create(const Size2i &p_size);
-	void create_from_image_alpha(const Ref<Image> &p_image, float p_threshold = 0.1);
+	static Ref<BitMap> create(const Size2i &p_size);
+	static Ref<BitMap> create_from_image_alpha(const Ref<Image> &p_image, float p_threshold = 0.1);
 
 	void set_bitv(const Point2i &p_pos, bool p_value);
 	void set_bit(int p_x, int p_y, bool p_value);

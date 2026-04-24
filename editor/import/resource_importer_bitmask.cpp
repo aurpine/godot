@@ -85,9 +85,7 @@ Error ResourceImporterBitMap::import(ResourceUID::ID p_source_id, const String &
 	int w = image->get_width();
 	int h = image->get_height();
 
-	Ref<BitMap> bitmap;
-	bitmap.instantiate();
-	bitmap->create(Size2(w, h));
+	Ref<BitMap> bitmap = BitMap::create(Size2(w, h));
 
 	for (int i = 0; i < h; i++) {
 		for (int j = 0; j < w; j++) {

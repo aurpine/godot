@@ -177,9 +177,7 @@ void Sprite2DEditor::_update_mesh_data() {
 	rect.size /= Vector2(node->get_hframes(), node->get_vframes());
 	rect.position += node->get_frame_coords() * rect.size;
 
-	Ref<BitMap> bm;
-	bm.instantiate();
-	bm->create_from_image_alpha(image);
+	Ref<BitMap> bm = BitMap::create_from_image_alpha(image);
 
 	int shrink = shrink_pixels->get_value();
 	if (shrink > 0) {

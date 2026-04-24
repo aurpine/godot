@@ -331,8 +331,7 @@ bool DPITexture::is_pixel_opaque(int p_x, int p_y) const {
 	if (alpha_cache.is_null()) {
 		Ref<Image> img = get_image();
 		if (img.is_valid()) {
-			alpha_cache.instantiate();
-			alpha_cache->create_from_image_alpha(img);
+			alpha_cache = BitMap::create_from_image_alpha(img);
 		}
 	}
 

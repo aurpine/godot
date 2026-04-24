@@ -33,39 +33,43 @@
 #include "core/object/class_db.h"
 #include "core/variant/typed_array.h"
 
-void BitMap::create(const Size2i &p_size) {
-	ERR_FAIL_COND(p_size.width < 1);
-	ERR_FAIL_COND(p_size.height < 1);
+Ref<BitMap> BitMap::create(const Size2i &p_size) {
+	Ref<BitMap> bitmap;
+	bitmap.instantiate();
+	ERR_FAIL_COND_V(p_size.width < 1, Ref<BitMap>());
+	ERR_FAIL_COND_V(p_size.height < 1, Ref<BitMap>());
 
-	ERR_FAIL_COND(static_cast<int64_t>(p_size.width) * static_cast<int64_t>(p_size.height) > INT32_MAX);
+	ERR_FAIL_COND_V(static_cast<int64_t>(p_size.width) * static_cast<int64_t>(p_size.height) > INT32_MAX, Ref<BitMap>());
 
-	Error err = bitmask.resize(Math::division_round_up(p_size.width * p_size.height, 8));
-	ERR_FAIL_COND(err != OK);
+	Error err = bitmap->bitmask.resize(Math::division_round_up(p_size.width * p_size.height, 8));
+	ERR_FAIL_COND_V(err != OK, Ref<BitMap>());
 
-	width = p_size.width;
-	height = p_size.height;
+	bitmap->width = p_size.width;
+	bitmap->height = p_size.height;
 
-	memset(bitmask.ptrw(), 0, bitmask.size());
+	memset(bitmap->bitmask.ptrw(), 0, bitmap->bitmask.size());
+	return bitmap;
 }
 
-void BitMap::create_from_image_alpha(const Ref<Image> &p_image, float p_threshold) {
-	ERR_FAIL_COND(p_image.is_null() || p_image->is_empty());
+Ref<BitMap> BitMap::create_from_image_alpha(const Ref<Image> &p_image, float p_threshold) {
+	ERR_FAIL_COND_V(p_image.is_null() || p_image->is_empty(), Ref<BitMap>());
 	Ref<Image> img = p_image->duplicate();
 	img->convert(Image::FORMAT_LA8);
-	ERR_FAIL_COND(img->get_format() != Image::FORMAT_LA8);
+	ERR_FAIL_COND_V(img->get_format() != Image::FORMAT_LA8, Ref<BitMap>());
 
-	create(Size2i(img->get_width(), img->get_height()));
+	Ref<BitMap> bitmap = create(Size2i(img->get_width(), img->get_height()));
 
 	const uint8_t *r = img->get_data().ptr();
-	uint8_t *w = bitmask.ptrw();
+	uint8_t *w = bitmap->bitmask.ptrw();
 
-	for (int i = 0; i < width * height; i++) {
+	for (int i = 0; i < bitmap->width * bitmap->height; i++) {
 		int bbyte = i / 8;
 		int bbit = i % 8;
 		if (r[i * 2 + 1] / 255.0 > p_threshold) {
 			w[bbyte] |= (1 << bbit);
 		}
 	}
+	return bitmap;
 }
 
 void BitMap::set_bit_rect(const Rect2i &p_rect, bool p_value) {
@@ -158,7 +162,13 @@ void BitMap::_set_data(const Dictionary &p_d) {
 	ERR_FAIL_COND(!p_d.has("size"));
 	ERR_FAIL_COND(!p_d.has("data"));
 
-	create(p_d["size"]);
+	const Size2i size = (Size2i) p_d["size"];
+	ERR_FAIL_COND(size.width < 1);
+	ERR_FAIL_COND(size.height < 1);
+	ERR_FAIL_COND(static_cast<int64_t>(size.width) * static_cast<int64_t>(size.height) > INT32_MAX);
+	width = size.width;
+	height = size.height;
+
 	bitmask = p_d["data"];
 }
 
@@ -524,9 +534,7 @@ static void fill_bits(const BitMap *p_src, Ref<BitMap> &p_map, const Point2i &p_
 Vector<Vector<Vector2>> BitMap::clip_opaque_to_polygons(const Rect2i &p_rect, float p_epsilon) const {
 	Rect2i r = Rect2i(0, 0, width, height).intersection(p_rect);
 
-	Ref<BitMap> fill;
-	fill.instantiate();
-	fill->create(get_size());
+	Ref<BitMap> fill = create(get_size());
 
 	Vector<Vector<Vector2>> polygons;
 	for (int i = r.position.y; i < r.position.y + r.size.height; i++) {
@@ -562,9 +570,11 @@ void BitMap::grow_mask(int p_pixels, const Rect2i &p_rect) {
 
 	Rect2i r = Rect2i(0, 0, width, height).intersection(p_rect);
 
-	Ref<BitMap> copy;
-	copy.instantiate();
-	copy->create(get_size());
+	Ref<BitMap> copy = create(get_size());
+	if (copy.is_null()) {
+		copy = Ref<BitMap>();
+		copy.instantiate();
+	}
 	copy->bitmask = bitmask;
 
 	for (int i = r.position.y; i < r.position.y + r.size.height; i++) {
@@ -646,9 +656,7 @@ void BitMap::resize(const Size2i &p_new_size) {
 		return;
 	}
 
-	Ref<BitMap> new_bitmap;
-	new_bitmap.instantiate();
-	new_bitmap->create(p_new_size);
+	Ref<BitMap> new_bitmap = create(p_new_size);
 	// also allow for upscaling
 	int lw = (width == 0) ? 0 : p_new_size.width;
 	int lh = (height == 0) ? 0 : p_new_size.height;
@@ -705,8 +713,8 @@ void BitMap::blit(const Vector2i &p_pos, const Ref<BitMap> &p_bitmap) {
 }
 
 void BitMap::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("create", "size"), &BitMap::create);
-	ClassDB::bind_method(D_METHOD("create_from_image_alpha", "image", "threshold"), &BitMap::create_from_image_alpha, DEFVAL(0.1));
+	ClassDB::bind_static_method("BitMap", D_METHOD("create", "size"), &BitMap::create);
+	ClassDB::bind_static_method("BitMap", D_METHOD("create_from_image_alpha", "image", "threshold"), &BitMap::create_from_image_alpha, DEFVAL(0.1));
 
 	ClassDB::bind_method(D_METHOD("set_bitv", "position", "bit"), &BitMap::set_bitv);
 	ClassDB::bind_method(D_METHOD("set_bit", "x", "y", "bit"), &BitMap::set_bit);
