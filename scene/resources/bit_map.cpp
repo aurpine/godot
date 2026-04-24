@@ -162,7 +162,7 @@ void BitMap::_set_data(const Dictionary &p_d) {
 	ERR_FAIL_COND(!p_d.has("size"));
 	ERR_FAIL_COND(!p_d.has("data"));
 
-	const Size2i size = (Size2i) p_d["size"];
+	const Size2i size = (Size2i)p_d["size"];
 	ERR_FAIL_COND(size.width < 1);
 	ERR_FAIL_COND(size.height < 1);
 	ERR_FAIL_COND(static_cast<int64_t>(size.width) * static_cast<int64_t>(size.height) > INT32_MAX);
