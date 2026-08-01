@@ -36,6 +36,9 @@ class Script;
 class ScriptLanguage;
 
 class ScriptInstance {
+protected:
+	Script *script_raw = nullptr;
+
 public:
 	virtual bool set(const StringName &p_name, const Variant &p_value) = 0;
 	virtual bool get(const StringName &p_name, Variant &r_ret) const = 0;
