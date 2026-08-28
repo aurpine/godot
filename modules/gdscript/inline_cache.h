@@ -116,7 +116,7 @@ public:
 
 	static _FORCE_INLINE_ FunctionInlineCache *get_ptr(uintptr_t start_idx) {
 		// Use next aligned location
-		return reinterpret_cast<FunctionInlineCache *>((start_idx + alignof(FunctionInlineCache) - 1) & -static_cast<intptr_t>(alignof(FunctionInlineCache)));
+		return reinterpret_cast<FunctionInlineCache *>((start_idx + alignof(FunctionInlineCache) - 1) & ~(static_cast<uintptr_t>(alignof(FunctionInlineCache) - 1)));
 	}
 };
 
