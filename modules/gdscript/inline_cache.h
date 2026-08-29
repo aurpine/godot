@@ -90,7 +90,7 @@ public:
 						return fn.gdscript_function->call(reinterpret_cast<GDScriptInstance *>(obj->get_script_instance()), p_args, p_argcount, p_error);
 					} break;
 					case VariantCallCache::Type::METHOD_BIND: {
-						return fn.method_bind->call(*VariantInternal::get_object(&p_base), p_args, p_argcount, p_error);
+						return fn.method_bind->call(fn.method_bind->is_static() ? nullptr : *VariantInternal::get_object(&p_base), p_args, p_argcount, p_error);
 					} break;
 					case VariantCallCache::Type::VARIANT_BUILTIN_METHOD: {
 						Variant ret;
