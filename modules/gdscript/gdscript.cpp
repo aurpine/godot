@@ -125,7 +125,9 @@ Variant GDScriptNativeClass::callp(const StringName &p_method, const Variant **p
 
 VariantCallCache GDScriptNativeClass::lookup_function_call(const StringName &p_method_name, Callable::CallError::Error &p_error) {
 	if (p_method_name == SNAME("new")) {
-		return Object::lookup_function_call(p_method_name, p_error);
+		// return Object::lookup_function_call(p_method_name, p_error);
+		p_error = Callable::CallError::Error::CALL_OK;
+		return VariantCallCache();
 	}
 
 	const MethodBind *method = ClassDB::get_method(name, p_method_name);
