@@ -59,7 +59,7 @@ Variant ScriptInstance::call_const(const StringName &p_method, const Variant **p
 }
 
 VariantCallCache ScriptInstance::lookup_function_call(const StringName &p_method_name, Callable::CallError::Error &p_error) {
-	p_error = Callable::CallError::CALL_ERROR_INVALID_METHOD;
+	p_error = Callable::CallError::CALL_OK;
 	return VariantCallCache();
 }
 

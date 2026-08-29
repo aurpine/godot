@@ -988,6 +988,7 @@ VariantCallCache GDScript::lookup_function_call(const StringName &p_method, Call
 			HashMap<StringName, GDScriptFunction *>::Iterator E = top->member_functions.find(p_method);
 			if (E) {
 				// TODO: add static call check
+				p_error = Callable::CallError::CALL_OK;
 				return VariantCallCache(E->value);
 			}
 		}

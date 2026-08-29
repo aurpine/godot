@@ -1908,7 +1908,7 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 				bool call_async = (_code_ptr[ip]) == OPCODE_CALL_ASYNC;
 #endif
 				LOAD_INSTRUCTION_ARGS
-				CHECK_SPACE(4 + instr_arg_count);
+				CHECK_SPACE(3 + instr_arg_count + static_cast<int>(FunctionInlineCacheIntSize));
 
 				ip += instr_arg_count;
 
