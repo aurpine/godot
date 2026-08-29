@@ -44,8 +44,8 @@ void FunctionInlineCache::load(Variant &p_base, const StringName &p_method) {
 			state = CacheState::INITIALIZING;
 			fn = std::move(found);
 			type = p_base.get_type();
-			gdtype = get_gdtype(p_base);
 			if (p_base.get_type() == Variant::OBJECT) {
+				gdtype = get_gdtype(p_base);
 				Object *obj = *VariantInternal::get_object(&p_base);
 
 				const ScriptInstance *si = obj->get_script_instance();
