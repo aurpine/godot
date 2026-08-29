@@ -988,7 +988,7 @@ VariantCallCache Object::lookup_function_call(const StringName &p_method_name, C
 		return VariantCallCache();
 	}
 
-	ret = member->payload.method;
+	ret = VariantCallCache(member->payload.method);
 	p_error = Callable::CallError::CALL_OK;
 	return ret;
 	// return VariantCallCache();
