@@ -1489,13 +1489,13 @@ VariantCallCache Variant::lookup_function_call(const StringName &p_method_name, 
 		return _get_obj().obj->lookup_function_call(p_method_name, p_error);
 	}
 	// Else
-	const VariantBuiltInMethodInfo *imf = builtin_method_info[type].getptr(p_method_name);
+	// const VariantBuiltInMethodInfo *imf = builtin_method_info[type].getptr(p_method_name);
 
-	if (imf != nullptr) {
-		p_error = Callable::CallError::CALL_OK;
-		return VariantCallCache(imf->call, &imf->default_arguments);
-	}
-	p_error = Callable::CallError::CALL_ERROR_INVALID_METHOD;
+	// if (imf != nullptr) {
+	// 	p_error = Callable::CallError::CALL_OK;
+	// 	return VariantCallCache(imf->call, &imf->default_arguments);
+	// }
+	p_error = Callable::CallError::CALL_OK;
 	return VariantCallCache();
 }
 

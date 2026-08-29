@@ -132,7 +132,8 @@ VariantCallCache GDScriptNativeClass::lookup_function_call(const StringName &p_m
 	if (method && method->is_static()) {
 		// Native static method.
 		p_error = Callable::CallError::Error::CALL_OK;
-		return VariantCallCache(method);
+		// return VariantCallCache(method);
+		return VariantCallCache();
 	}
 
 	p_error = Callable::CallError::CALL_ERROR_INVALID_METHOD;
@@ -1002,7 +1003,9 @@ VariantCallCache GDScript::lookup_function_call(const StringName &p_method, Call
 	}
 
 	if (_is_abstract && p_method == SNAME("new")) {
-		p_error = Callable::CallError::CALL_ERROR_INVALID_METHOD;
+		// Disable this case?
+		p_error = Callable::CallError::CALL_OK;
+		ret = VariantCallCache();
 		return ret;
 	}
 
