@@ -46,7 +46,7 @@ void FunctionInlineCache::load(Variant &p_base, const StringName &p_method) {
 			type = p_base.get_type();
 			gdtype = get_gdtype(p_base);
 			if (p_base.get_type() == Variant::OBJECT) {
-				Object *obj = *VariantInternal::get_object(&p_base);
+				Object *obj = p_base.operator Object *();
 
 				const ScriptInstance *si = obj->get_script_instance();
 				if (si) {

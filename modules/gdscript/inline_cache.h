@@ -64,8 +64,8 @@ private:
 		return nullptr;
 	}
 
-	_FORCE_INLINE_ bool hit(Variant &p_base) const {
-		return p_base.get_type() == type && (p_base.get_type() != Variant::OBJECT || (get_gdtype(p_base) == gdtype && script_matches(*VariantInternal::get_object(&p_base))));
+	_FORCE_INLINE_ bool hit(const Variant &p_base) const {
+		return p_base.get_type() == type && (p_base.get_type() != Variant::OBJECT || (get_gdtype(p_base) == gdtype && script_matches(p_base.operator Object *())));
 	}
 
 	_FORCE_INLINE_ bool script_matches(Object *obj) const {
@@ -86,11 +86,11 @@ public:
 				switch (fn.type) {
 					case VariantCallCache::Type::GDSCRIPT_FUNCTION: {
 						DEV_ASSERT(p_base.get_type() == Variant::OBJECT);
-						Object *obj = *VariantInternal::get_object(&p_base);
+						Object *obj = p_base.operator Object *();
 						return fn.gdscript_function->call(reinterpret_cast<GDScriptInstance *>(obj->get_script_instance()), p_args, p_argcount, p_error);
 					} break;
 					case VariantCallCache::Type::METHOD_BIND: {
-						return fn.method_bind->call(*VariantInternal::get_object(&p_base), p_args, p_argcount, p_error);
+						return fn.method_bind->call(p_base.operator Object *(), p_args, p_argcount, p_error);
 					} break;
 					case VariantCallCache::Type::VARIANT_BUILTIN_METHOD: {
 						Variant ret;
