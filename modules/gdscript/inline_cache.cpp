@@ -53,8 +53,8 @@ void FunctionInlineCache::load(Variant &p_base, const StringName &p_method) {
 					script = si->get_script();
 					is_static = false;
 				} else {
+					// Can be null with no Script attached (MethodBind)
 					script = Object::cast_to<Script>(obj);
-					DEV_ASSERT(script.is_valid());
 					is_static = true;
 				}
 			}
